@@ -68,7 +68,7 @@ def data_reader(data_path):
 
 	return x_train, y_train, x_test, y_test
 
-def main(path, name, save_history=False):
+def main_script_to_model(path, name, save_history=False):
 	global model_name
 	model_name = name
 
@@ -138,4 +138,4 @@ def main(path, name, save_history=False):
 
 if __name__ == "__main__":
 	os.system('clear')
-	main('./test/example_params.txt', 'simple_logistic')
+	main_script_to_model('./test/example_params.txt', 'simple_logistic')
