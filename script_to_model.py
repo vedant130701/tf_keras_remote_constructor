@@ -2,6 +2,9 @@ import tensorflow as tf
 import numpy as np
 import os
 import pandas as pd
+from contextlib import redirect_stdout
+
+model_name = ""
 
 def read_script(path):
 	file = open(path, 'r')
@@ -21,6 +24,20 @@ def script_to_model(model_description_full):
 	model_description = [i.split(', ') for i in model_description_full[model_description_full.index('model:')+1:]]
 	
 	return model_evals, model_description
+
+class myCallback(tf.keras.callbacks.Callback):
+	global model_name
+	def on_epoch_end(self, epoch, logs={}): 
+		current_evals = {"epoch": [epoch]}
+		for key, item in logs.items():
+			current_evals.update({key: [item]})
+		current_evals = pd.DataFrame(current_evals)
+		if epoch == 1:
+			current_evals.to_csv('./output_'+model_name+'/per_epoch.csv', index=False)
+		else:
+			current_evals.to_csv('./output_'+model_name+'/per_epoch.csv', header=False, mode='a', index=False)
+
+		
 
 def create_model(model_evals, model_description):
 	model_arr = []
@@ -51,7 +68,11 @@ def data_reader(data_path):
 
 	return x_train, y_train, x_test, y_test
 
-def main(path):
+def main(path, name, save_history=False):
+	global model_name
+	model_name = name
+
+	os.system('mkdir output_'+model_name)
 
 	data_path = './data/'
 
@@ -63,16 +84,58 @@ def main(path):
 
 	model = create_model(model_evals, model_description)
 
-	history = model.fit(
-		x_train, y_train,
-		epochs=model_evals["epochs"],
-		validation_data=(x_test, y_test)
-		)
+	callbacks = myCallback()
 
-	summary = model.summary()
+	if save_history:
+		with open('./output_'+model_name+'/history.txt', 'w+') as f:
+			with redirect_stdout(f):
+				history = model.fit(
+					x_train, y_train,
+					epochs=model_evals["epochs"],
+					validation_data=(x_test, y_test),
+					callbacks=[callbacks],
+					verbose=1
+					)
+	else:
+		history = model.fit(
+			x_train, y_train,
+			epochs=model_evals["epochs"],
+			validation_data=(x_test, y_test),
+			callbacks=[callbacks],
+			verbose=1
+			)
+
+
+	
+
+	evals_train_raw = model.evaluate(x_train, y_train)
+	evals_test_raw = model.evaluate(x_test, y_test)
+
+	labels = ["loss"] + model_evals["metrics"]
+
+	evals_train = {}
+	evals_test = {}
+
+	for index, label in enumerate(labels):
+		evals_train.update({label: evals_train_raw[index]})
+		evals_test.update({label: evals_test_raw[index]})
+
+	final_value = {"label": ["train", "test"]}
+
+	for label in labels:
+		final_value.update({label: [evals_train[label], evals_test[label]]})
+
+	final_value = pd.DataFrame(final_value)
+
+	final_value.to_csv('./output_'+model_name+'/final_output.csv', index=False)
+
+
+	with open('./output_'+model_name+'/summary.txt', 'w+') as f:
+		with redirect_stdout(f):
+			model.summary()
 
 
 
 if __name__ == "__main__":
 	os.system('clear')
-	main('example_params.txt')
+	main('./test/example_params.txt', 'simple_logistic')
