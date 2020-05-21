@@ -7,5 +7,4 @@ model:
 Dense, 32, relu
 Dense, 32, relu
 Dropout, 0.1
-Dense: 1, sigmoid
-
+Dense, 1, sigmoid

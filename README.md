@@ -72,3 +72,7 @@ Let's begin by first listing down all available Features:
 * SGD
 
 6. Regularizers: Future Update
+
+## Preprocessing:
+
+All pre-processing to be done by the user, including randomly shuffling the data. As of now the split is set as 80:20 will be updated in the future.
