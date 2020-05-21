@@ -5,7 +5,7 @@ Let's begin by first listing down all available Features:
 
 1. Activation:
 
-..* elu
+...* elu
 ..* exponential
 ..* hard_sigmoid
 ..* linear
