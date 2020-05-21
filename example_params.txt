@@ -1,0 +1,11 @@
+epochs: 100
+loss: binary_crossentropy
+optimizer: sgd
+metrics: [accuracy]
+
+model:
+Dense, 32, relu
+Dense, 32, relu
+Dropout, 0.1
+Dense: 1, sigmoid
+
