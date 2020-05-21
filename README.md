@@ -4,7 +4,7 @@ This is a special work in progress which allows us to run tf.keras models remote
 Let's begin by first listing down all available Features:
 
 1. Activation:
-..* elu
+...* elu
 ..* exponential
 ..* hard_sigmoid
 ..* linear
