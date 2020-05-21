@@ -25,6 +25,7 @@ Let's begin by first listing down all available Features:
 * Conv1D
 * Conv2D
 * Bidirectional
+* Flatten
 
 3. Losses:
 * binary_crossentropy
