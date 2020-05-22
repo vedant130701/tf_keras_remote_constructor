@@ -7,7 +7,9 @@ app = flask.Flask(__name__)
 def handle_request():
     return "Flask Server & Android are Working Successfully"
 
-
+@app.route('/processjson', methods=['POST'])
+def processjson():
+	return jsonify({'result': 'Successfully'})
 #### basically when u get the request execute the following code:
 '''
 file = open(model_name+'.txt', 'w')
